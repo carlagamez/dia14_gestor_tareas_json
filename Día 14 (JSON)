@@ -1,0 +1,273 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": []
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Día 14 — Guardar datos en JSON\n",
+        "\n",
+        "Hoy voy a mejorar mi gestor de tareas utilizando\n",
+        "formato JSON en lugar de texto plano.\n",
+        "\n",
+        "Conceptos:\n",
+        "- JSON\n",
+        "- listas de diccionarios\n",
+        "- serialización\n",
+        "\n",
+        "Día: 14/100"
+      ],
+      "metadata": {
+        "id": "K0fCd_FW3wxC"
+      }
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "id": "zULx3saj3sxr"
+      },
+      "outputs": [],
+      "source": [
+        "import json"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def cargar_tareas():\n",
+        "    try:\n",
+        "        with open(\"tareas.json\", \"r\") as archivo:\n",
+        "            return json.load(archivo)\n",
+        "    except FileNotFoundError:\n",
+        "        return []"
+      ],
+      "metadata": {
+        "id": "s2ZjNvAO36xA"
+      },
+      "execution_count": 4,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def guardar_tareas(tareas):\n",
+        "    with open(\"tareas.json\", \"w\") as archivo:\n",
+        "        json.dump(tareas, archivo, indent=4)"
+      ],
+      "metadata": {
+        "id": "VbmEFpmP5VNZ"
+      },
+      "execution_count": 5,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def añadir_tarea(tareas):\n",
+        "  titulo = input(\"Introduce el título de la tarea: \")\n",
+        "\n",
+        "  tarea = {\n",
+        "      \"titulo\": titulo,\n",
+        "      \"completada\": False\n",
+        "  }\n",
+        "\n",
+        "  tareas.append(tarea)\n",
+        "  guardar_tareas(tareas)\n",
+        "  print(\"Tarea añadida con éxito.\")"
+      ],
+      "metadata": {
+        "id": "r516j9OD5r5T"
+      },
+      "execution_count": 6,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def mostrar_tareas(tareas):\n",
+        "  if not tareas:\n",
+        "    print(\"No hay tareas.\")\n",
+        "  else:\n",
+        "    print(\"\\n Lista de tareas:\")\n",
+        "    for i, tarea in enumerate(tareas, start=1):\n",
+        "      estado = \"Completada\" if tarea[\"completada\"] else \"No completada\"\n",
+        "      print(f\"{i}. {tarea['titulo']} - {estado}\")"
+      ],
+      "metadata": {
+        "id": "ZN53r1oV5_Wj"
+      },
+      "execution_count": 7,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def completar_tarea(tareas):\n",
+        "    mostrar_tareas(tareas)\n",
+        "    numero = int(input(\"Número de tarea a completar: \"))\n",
+        "\n",
+        "    if 1 <= numero <= len(tareas):\n",
+        "        tareas[numero - 1][\"completada\"] = True\n",
+        "        guardar_tareas(tareas)\n",
+        "        print(\"Tarea completada\")\n",
+        "    else:\n",
+        "        print(\"Número inválido\")"
+      ],
+      "metadata": {
+        "id": "4zS2Xrqe61zg"
+      },
+      "execution_count": 9,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def mostrar_menu():\n",
+        "  print(\"\\n--- gestor de tareas json ---\")\n",
+        "  print(\"1. Añadir tarea\")\n",
+        "  print(\"2. Mostrar tareas\")\n",
+        "  print(\"3. Completar tarea\")\n",
+        "  print(\"4. Salir\")"
+      ],
+      "metadata": {
+        "id": "J4C8dTGR7IOU"
+      },
+      "execution_count": 10,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def main():\n",
+        "  tareas = cargar_tareas()\n",
+        "  opcion = \"\"\n",
+        "\n",
+        "  while opcion != \"4\":\n",
+        "    mostrar_menu()\n",
+        "    opcion = input(\"Elige una opción: \")\n",
+        "\n",
+        "    if opcion == \"1\":\n",
+        "      añadir_tarea(tareas)\n",
+        "    elif opcion == \"2\":\n",
+        "      mostrar_tareas(tareas)\n",
+        "    elif opcion == \"3\":\n",
+        "      completar_tarea(tareas)\n",
+        "    elif opcion == \"4\":\n",
+        "      print(\"¡Hasta luego!\")\n",
+        "    else:\n",
+        "      print(\"Opción inválida. Inténtalo de nuevo.\")"
+      ],
+      "metadata": {
+        "id": "vOBQArA571m7"
+      },
+      "execution_count": 11,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "main()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "XbUsGwLO8PdF",
+        "outputId": "5dc09d49-a1fb-46e0-8110-04a68827b161"
+      },
+      "execution_count": 12,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "\n",
+            "--- gestor de tareas json ---\n",
+            "1. Añadir tarea\n",
+            "2. Mostrar tareas\n",
+            "3. Completar tarea\n",
+            "4. Salir\n",
+            "Elige una opción: 1\n",
+            "Introduce el título de la tarea: Reunión con cliente\n",
+            "Tarea añadida con éxito.\n",
+            "\n",
+            "--- gestor de tareas json ---\n",
+            "1. Añadir tarea\n",
+            "2. Mostrar tareas\n",
+            "3. Completar tarea\n",
+            "4. Salir\n",
+            "Elige una opción: Lección de python\n",
+            "Opción inválida. Inténtalo de nuevo.\n",
+            "\n",
+            "--- gestor de tareas json ---\n",
+            "1. Añadir tarea\n",
+            "2. Mostrar tareas\n",
+            "3. Completar tarea\n",
+            "4. Salir\n",
+            "Elige una opción: 1\n",
+            "Introduce el título de la tarea: Lección de python\n",
+            "Tarea añadida con éxito.\n",
+            "\n",
+            "--- gestor de tareas json ---\n",
+            "1. Añadir tarea\n",
+            "2. Mostrar tareas\n",
+            "3. Completar tarea\n",
+            "4. Salir\n",
+            "Elige una opción: 2\n",
+            "\n",
+            " Lista de tareas:\n",
+            "1. Reunión con cliente - No completada\n",
+            "2. Lección de python - No completada\n",
+            "\n",
+            "--- gestor de tareas json ---\n",
+            "1. Añadir tarea\n",
+            "2. Mostrar tareas\n",
+            "3. Completar tarea\n",
+            "4. Salir\n",
+            "Elige una opción: 3\n",
+            "\n",
+            " Lista de tareas:\n",
+            "1. Reunión con cliente - No completada\n",
+            "2. Lección de python - No completada\n",
+            "Número de tarea a completar: 1\n",
+            "Tarea completada\n",
+            "\n",
+            "--- gestor de tareas json ---\n",
+            "1. Añadir tarea\n",
+            "2. Mostrar tareas\n",
+            "3. Completar tarea\n",
+            "4. Salir\n",
+            "Elige una opción: 3\n",
+            "\n",
+            " Lista de tareas:\n",
+            "1. Reunión con cliente - Completada\n",
+            "2. Lección de python - No completada\n",
+            "Número de tarea a completar: 2\n",
+            "Tarea completada\n",
+            "\n",
+            "--- gestor de tareas json ---\n",
+            "1. Añadir tarea\n",
+            "2. Mostrar tareas\n",
+            "3. Completar tarea\n",
+            "4. Salir\n",
+            "Elige una opción: 4\n",
+            "¡Hasta luego!\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
